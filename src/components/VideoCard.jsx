@@ -6,7 +6,7 @@ export default function VideoCard({ video }) {
   const navigate = useNavigate();
 
   const ownerName =
-   video?.owner?.fullname ||
+    video?.owner?.fullname ||
     video?.owner?.username ||
     video?.owner?.userName ||
     "Unknown creator";
@@ -146,7 +146,7 @@ export default function VideoCard({ video }) {
           </h2>
 
           <p className="mt-1.5 text-sm text-gray-500 truncate">
-            {ownerName}
+            {video.owner.username}
           </p>
 
           <p className="mt-0.5 text-xs sm:text-sm text-gray-400">
