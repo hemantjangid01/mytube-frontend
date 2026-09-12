@@ -146,7 +146,7 @@ export default function VideoCard({ video }) {
           </h2>
 
           <p className="mt-1.5 text-sm text-gray-500 truncate">
-            {video.owner.username}
+            {ownerName}
           </p>
 
           <p className="mt-0.5 text-xs sm:text-sm text-gray-400">
