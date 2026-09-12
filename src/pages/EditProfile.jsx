@@ -83,6 +83,16 @@ const EditProfile = () => {
       withCredentials: true,
     });
   };
+   const updateCoverImage = async () => {
+  if (!coverImage) return;
+
+  const formData = new FormData();
+  formData.append("coverImage", coverImage);
+
+  await axios.patch(`${API}/users/cover-image`, formData, {
+    withCredentials: true,
+  });
+};
 
   // =========================
   // SAVE EVERYTHING
@@ -151,16 +161,7 @@ if (coverImage) {
       </div>
     );
   }
-  const updateCoverImage = async () => {
-  if (!coverImage) return;
-
-  const formData = new FormData();
-  formData.append("coverImage", coverImage);
-
-  await axios.patch(`${API}/users/cover-image`, formData, {
-    withCredentials: true,
-  });
-};
+ 
 
   return (
     <div className="min-h-screen bg-gray-50">
