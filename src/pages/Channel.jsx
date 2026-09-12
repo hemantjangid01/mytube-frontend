@@ -193,15 +193,26 @@ export default function Channel() {
             {/* =========================
                 COVER IMAGE
             ========================= */}
-            {channel.coverimage ? (
-    <img
-        src={channel.coverimage?.replace("http://", "https://")}
-        alt="Channel cover"
-        className="w-full h-full object-cover"
-    />
-) : (
-    <div className="w-full h-full bg-gray-200"></div>
-)}
+            <div className="w-full">
+
+                <div className="relative w-full h-52 sm:h-64 md:h-72 bg-gray-200 overflow-hidden">
+
+                    {channel.coverimage ? (
+                        <img
+                            src={channel.coverimage}
+                            alt="Channel cover"
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <div className="w-full h-full bg-gray-200"></div>
+                    )}
+
+                    <div className="absolute inset-0 bg-black/10"></div>
+
+                </div>
+
+            </div>
+
             {/* =========================
                 CHANNEL HEADER
             ========================= */}
