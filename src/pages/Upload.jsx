@@ -54,8 +54,6 @@ export default function Upload() {
                 }
             );
 
-            console.log("Upload response:", response.data);
-
             setSuccess("Video uploaded successfully!");
 
             setTitle("");
@@ -68,10 +66,6 @@ export default function Upload() {
             }, 1000);
 
         } catch (error) {
-            console.error(
-                "Upload error:",
-                error.response?.data || error.message
-            );
 
             setError(
                 error.response?.data?.message ||
@@ -83,7 +77,7 @@ export default function Upload() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 px-4 py-8 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-[#F8FAFC] px-4 py-8 sm:px-6 lg:px-8">
 
             {/* =========================
                 PAGE HEADER
@@ -91,11 +85,11 @@ export default function Upload() {
 
             <div className="max-w-3xl mx-auto mb-8">
 
-                <h1 className="text-3xl font-bold text-gray-900">
+                <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#0F172A]">
                     Upload Video
                 </h1>
 
-                <p className="mt-2 text-gray-500">
+                <p className="mt-2 text-[#64748B]">
                     Share your video with the community
                 </p>
 
@@ -105,7 +99,7 @@ export default function Upload() {
                 FORM CARD
             ========================= */}
 
-            <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8">
+            <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-[#E2E8F0] p-6 sm:p-8">
 
                 <form
                     onSubmit={handleSubmit}
@@ -119,7 +113,7 @@ export default function Upload() {
                     <div>
                         <label
                             htmlFor="title"
-                            className="block text-sm font-semibold text-gray-700 mb-2"
+                            className="block text-sm font-semibold text-[#334155] mb-2"
                         >
                             Video Title
                         </label>
@@ -130,7 +124,7 @@ export default function Upload() {
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="Enter your video title"
-                            className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-gray-50 outline-none transition focus:bg-white focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                            className="w-full px-4 py-3 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] outline-none transition focus:bg-white focus:border-[#2563EB] focus:ring-2 focus:ring-blue-100"
                         />
                     </div>
 
@@ -141,7 +135,7 @@ export default function Upload() {
                     <div>
                         <label
                             htmlFor="description"
-                            className="block text-sm font-semibold text-gray-700 mb-2"
+                            className="block text-sm font-semibold text-[#334155] mb-2"
                         >
                             Description
                         </label>
@@ -154,7 +148,7 @@ export default function Upload() {
                             }
                             placeholder="Tell viewers what your video is about..."
                             rows={6}
-                            className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-gray-50 outline-none resize-none transition focus:bg-white focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                            className="w-full px-4 py-3 rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] outline-none resize-none transition focus:bg-white focus:border-[#2563EB] focus:ring-2 focus:ring-blue-100"
                         />
                     </div>
 
@@ -164,18 +158,18 @@ export default function Upload() {
 
                     <div>
 
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-[#334155] mb-2">
                             Video
                         </label>
 
-                        <label className="flex flex-col items-center justify-center w-full min-h-36 px-6 py-6 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 cursor-pointer hover:bg-gray-100 hover:border-gray-400 transition">
+                        <label className="flex flex-col items-center justify-center w-full min-h-36 px-6 py-6 border-2 border-dashed border-[#CBD5E1] rounded-xl bg-slate-50 cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-all">
 
                             {videoFile ? (
                                 <div className="text-center">
 
-                                    <div className="mx-auto mb-3 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                                    <div className="mx-auto mb-3 w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
                                         <svg
-                                            className="w-6 h-6 text-red-600"
+                                            className="w-6 h-6 text-[#2563EB]"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -189,15 +183,15 @@ export default function Upload() {
                                         </svg>
                                     </div>
 
-                                    <p className="font-medium text-gray-800 break-all">
+                                    <p className="font-medium text-[#0F172A] break-all">
                                         {videoFile.name}
                                     </p>
 
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <p className="text-xs text-[#64748B] mt-1">
                                         {(videoFile.size / (1024 * 1024)).toFixed(2)} MB
                                     </p>
 
-                                    <p className="text-xs text-red-600 mt-2">
+                                    <p className="text-xs text-[#2563EB] mt-2">
                                         Click to change video
                                     </p>
 
@@ -207,7 +201,7 @@ export default function Upload() {
 
                                     <div className="mx-auto mb-3 w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
                                         <svg
-                                            className="w-6 h-6 text-gray-500"
+                                            className="w-6 h-6 text-[#64748B]"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -221,11 +215,11 @@ export default function Upload() {
                                         </svg>
                                     </div>
 
-                                    <p className="font-medium text-gray-700">
+                                    <p className="font-medium text-[#334155]">
                                         Select your video
                                     </p>
 
-                                    <p className="text-sm text-gray-400 mt-1">
+                                    <p className="text-sm text-[#94A3B8] mt-1">
                                         MP4, WebM, MOV and other video formats
                                     </p>
 
@@ -253,11 +247,11 @@ export default function Upload() {
 
                     <div>
 
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-[#334155] mb-2">
                             Thumbnail
                         </label>
 
-                        <label className="flex flex-col items-center justify-center w-full min-h-36 px-6 py-6 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 cursor-pointer hover:bg-gray-100 hover:border-gray-400 transition overflow-hidden">
+                        <label className="flex flex-col items-center justify-center w-full min-h-36 px-6 py-6 border-2 border-dashed border-[#CBD5E1] rounded-xl bg-slate-50 cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-all overflow-hidden">
 
                             {thumbnail ? (
                                 <div className="flex flex-col items-center">
@@ -268,11 +262,11 @@ export default function Upload() {
                                         className="w-52 h-28 object-cover rounded-lg shadow-sm mb-3"
                                     />
 
-                                    <p className="font-medium text-gray-800 break-all text-center">
+                                    <p className="font-medium text-[#0F172A] break-all text-center">
                                         {thumbnail.name}
                                     </p>
 
-                                    <p className="text-xs text-red-600 mt-2">
+                                    <p className="text-xs text-[#2563EB] mt-2">
                                         Click to change thumbnail
                                     </p>
 
@@ -282,7 +276,7 @@ export default function Upload() {
 
                                     <div className="mx-auto mb-3 w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
                                         <svg
-                                            className="w-6 h-6 text-gray-500"
+                                            className="w-6 h-6 text-[#64748B]"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -296,11 +290,11 @@ export default function Upload() {
                                         </svg>
                                     </div>
 
-                                    <p className="font-medium text-gray-700">
+                                    <p className="font-medium text-[#334155]">
                                         Select a thumbnail
                                     </p>
 
-                                    <p className="text-sm text-gray-400 mt-1">
+                                    <p className="text-sm text-[#94A3B8] mt-1">
                                         JPG, PNG or JPEG
                                     </p>
 
@@ -328,7 +322,7 @@ export default function Upload() {
 
                     {error && (
                         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3">
-                            <p className="text-sm text-red-600">
+                            <p className="text-sm text-[#2563EB]">
                                 {error}
                             </p>
                         </div>
@@ -349,7 +343,7 @@ export default function Upload() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-3.5 rounded-xl bg-red-600 text-white font-semibold transition hover:bg-red-700 active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="w-full py-3.5 rounded-xl bg-[#2563EB] text-white font-semibold shadow-sm transition-all hover:bg-[#1D4ED8] hover:shadow-md active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         {loading
                             ? "Uploading video..."

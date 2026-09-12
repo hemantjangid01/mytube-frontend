@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -6,7 +7,7 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-const API = import.meta.env.VITE_API_URL;;
+  const API = import.meta.env.VITE_API_URL;
 
   // =========================
   // AUTH STATE
@@ -16,51 +17,44 @@ const API = import.meta.env.VITE_API_URL;;
   const [authLoading, setAuthLoading] = useState(true);
 
   // =========================
-  // SEARCH
+  // SEARCH STATE
   // =========================
 
-  const searchParams = new URLSearchParams(location.search);
+  const [search, setSearch] = useState("");
 
-  const initialSearch = searchParams.get("search") || "";
+  // =========================
+  // SYNC SEARCH WITH URL
+  // =========================
 
-  const [search, setSearch] = useState(initialSearch);
-
-  // Keep search input synced with URL
   useEffect(() => {
-    setSearch(searchParams.get("search") || "");
+    const params = new URLSearchParams(location.search);
+    setSearch(params.get("search") || "");
   }, [location.search]);
 
   // =========================
-  // CHECK CURRENT USER
+  // GET CURRENT USER
   // =========================
 
-  const getCurrentUser = async () => {
-    try {
-      const response = await axios.get(
-        `${API}/users/current-user`,
-        {
-          withCredentials: true,
-        }
-      );
-
-      console.log("CURRENT USER:", response.data);
-
-      setUser(response.data.data);
-    } catch (error) {
-      console.log(
-        "User not logged in:",
-        error.response?.data || error.message
-      );
-
-      setUser(null);
-    } finally {
-      setAuthLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const getCurrentUser = async () => {
+      try {
+        const response = await axios.get(
+          `${API}/users/current-user`,
+          {
+            withCredentials: true,
+          }
+        );
+
+        setUser(response.data?.data || null);
+      } catch (error) {
+        setUser(null);
+      } finally {
+        setAuthLoading(false);
+      }
+    };
+
     getCurrentUser();
-  }, []);
+  }, [API]);
 
   // =========================
   // SEARCH
@@ -76,9 +70,7 @@ const API = import.meta.env.VITE_API_URL;;
       return;
     }
 
-    navigate(
-      `/?search=${encodeURIComponent(trimmedSearch)}`
-    );
+    navigate(`/?search=${encodeURIComponent(trimmedSearch)}`);
   };
 
   // =========================
@@ -87,122 +79,209 @@ const API = import.meta.env.VITE_API_URL;;
 
   const handleLogout = async () => {
     try {
-        await axios.post(
-            `${API}/users/logout`,
-            {},
-            {
-                withCredentials: true,
-            }
-        );
+      await axios.post(
+        `${API}/users/logout`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
 
-        window.location.replace("/login");
+      setUser(null);
+      window.location.replace("/login");
     } catch (error) {
-        console.error(
-            "Logout error:",
-            error.response?.data || error.message
-        );
+      // Logout failed
     }
-};
+  };
+
+  // =========================
+  // USER INITIAL
+  // =========================
+
+  const userInitial =
+    user?.username?.charAt(0)?.toUpperCase() || "U";
 
   return (
-    <header className="h-16 border-b border-gray-200 bg-blue-400 flex items-center px-4 sm:px-6 shadow-sm">
+    <header className="sticky top-0 z-50 w-full h-16 bg-[#2563EB] shadow-md">
+      <div className="h-full flex items-center gap-3 px-3 sm:px-5">
 
-      {/* =========================
-          LOGO
-      ========================= */}
+        {/* =========================
+            LOGO
+        ========================= */}
 
-      <div
-        onClick={() => navigate("/")}
-        className="text-2xl font-bold cursor-pointer text-gray-900"
-      >
-        YouTube
-      </div>
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          aria-label="Go to MyTube home"
+          className="flex items-center gap-2 shrink-0"
+        >
+          <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shadow-sm">
+            <span className="text-[#2563EB] text-lg font-bold">
+              ▶
+            </span>
+          </div>
 
-      {/* =========================
-          SEARCH
-      ========================= */}
+          <span className="hidden sm:block text-xl font-extrabold tracking-tight text-white">
+            MyTube
+          </span>
+        </button>
 
-      <form
-        onSubmit={handleSearch}
-        className="flex-1 flex justify-center mx-4 sm:mx-8"
-      >
-        <div className="flex w-full max-w-2xl">
+        {/* =========================
+            SEARCH
+        ========================= */}
 
-          <input
-            type="text"
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            placeholder="Search"
-            className="flex-1 min-w-0 border border-gray-300 rounded-l-full px-5 py-2 outline-none focus:border-gray-500"
-          />
+        <form
+          onSubmit={handleSearch}
+          className="flex-1 flex justify-center px-1 sm:px-4"
+        >
+          <div className="flex w-full max-w-2xl h-10">
 
-          <button
-            type="submit"
-            className="px-5 sm:px-6 border border-gray-300 border-l-0 rounded-r-full bg-gray-50 hover:bg-gray-100 transition"
-          >
-            🔍
-          </button>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search videos..."
+              aria-label="Search videos"
+              className="
+                flex-1
+                min-w-0
+                px-4
+                bg-white
+                text-gray-900
+                placeholder-gray-400
+                border border-gray-200
+                rounded-l-full
+                outline-none
+                focus:ring-2
+                focus:ring-blue-200
+              "
+            />
+
+            <button
+              type="submit"
+              aria-label="Search"
+              className="
+                w-12
+                shrink-0
+                flex
+                items-center
+                justify-center
+                bg-gray-100
+                text-gray-700
+                border border-gray-200
+                border-l-0
+                rounded-r-full
+                hover:bg-gray-200
+                transition
+              "
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
+                />
+              </svg>
+            </button>
+
+          </div>
+        </form>
+
+        {/* =========================
+            RIGHT SIDE
+        ========================= */}
+
+        <div className="flex items-center gap-2 shrink-0">
+
+          {authLoading ? (
+            <div className="w-20 h-9 rounded-full bg-white/25 animate-pulse" />
+          ) : user ? (
+
+            <>
+              {/* PROFILE */}
+
+              <button
+                type="button"
+                onClick={() => navigate("/edit-profile")}
+                aria-label="Open profile"
+                className="
+                  flex
+                  items-center
+                  gap-2
+                  px-1.5
+                  sm:px-2
+                  py-1
+                  rounded-full
+                  hover:bg-white/10
+                  transition
+                "
+              >
+                <div className="w-9 h-9 rounded-full bg-white text-[#2563EB] flex items-center justify-center font-bold">
+                  {userInitial}
+                </div>
+
+                <span className="hidden lg:block text-sm font-medium text-white">
+                  Profile
+                </span>
+              </button>
+
+              {/* LOGOUT */}
+
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="
+                  px-3
+                  sm:px-4
+                  py-2
+                  rounded-full
+                  bg-white
+                  text-[#2563EB]
+                  text-sm
+                  font-semibold
+                  hover:bg-blue-50
+                  active:scale-95
+                  transition
+                "
+              >
+                Logout
+              </button>
+            </>
+
+          ) : (
+
+            /* LOGIN */
+
+            <button
+              type="button"
+              onClick={() => navigate("/login")}
+              className="
+                px-4
+                sm:px-5
+                py-2
+                rounded-full
+                bg-white
+                text-[#2563EB]
+                text-sm
+                font-semibold
+                hover:bg-blue-50
+                active:scale-95
+                transition
+              "
+            >
+              Login
+            </button>
+          )}
 
         </div>
-      </form>
-
-      {/* =========================
-          RIGHT SIDE
-      ========================= */}
-
-      <div className="flex items-center gap-2 sm:gap-3">
-
-        {/* While checking authentication */}
-        {authLoading ? (
-
-          <div className="w-20 h-9 bg-gray-100 rounded-lg animate-pulse" />
-
-        ) : user ? (
-
-          /* =========================
-             LOGGED IN
-          ========================= */
-
-          <>
-            <button
-              type="button"
-              onClick={() =>
-                navigate("/edit-profile")
-              }
-              className="px-3 sm:px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition"
-            >
-              Profile
-            </button>
-
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="px-3 sm:px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition"
-            >
-              Logout
-            </button>
-          </>
-
-        ) : (
-
-          /* =========================
-             LOGGED OUT
-          ========================= */
-
-          <button
-            type="button"
-            onClick={() => navigate("/login")}
-            className="px-4 py-2 rounded-lg bg-red-600 text-white font-medium hover:bg-red-700 transition"
-          >
-            Login
-          </button>
-
-        )}
-
       </div>
-
     </header>
   );
 };

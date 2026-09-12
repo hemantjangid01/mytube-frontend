@@ -1,9 +1,11 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Signup() {
-    const API = import.meta.env.VITE_API_URL;
+  const API = import.meta.env.VITE_API_URL;
+
   const [signupData, setSignupData] = useState({
     fullname: "",
     email: "",
@@ -19,20 +21,12 @@ export default function Signup() {
 
   const navigate = useNavigate();
 
-  // =========================
-  // HANDLE INPUT CHANGE
-  // =========================
-
   const handleChange = (e) => {
     setSignupData({
       ...signupData,
       [e.target.name]: e.target.value,
     });
   };
-
-  // =========================
-  // HANDLE SIGNUP
-  // =========================
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -67,23 +61,12 @@ export default function Signup() {
         data.append("coverimage", coverimage);
       }
 
-      const response = await axios.post(
-        `${API}/users/register`,
-        data,
-        {
-          withCredentials: true,
-        }
-      );
-
-      console.log("SIGNUP RESPONSE:", response.data);
+      await axios.post(`${API}/users/register`, data, {
+        withCredentials: true,
+      });
 
       navigate("/login");
     } catch (error) {
-      console.error(
-        "Signup error:",
-        error.response?.data || error.message
-      );
-
       setError(
         error.response?.data?.message ||
           "Signup failed. Please try again."
@@ -94,71 +77,51 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-8">
-
-      {/* =========================
-          SIGNUP CARD
-      ========================= */}
-
+    <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-lg">
 
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-7 sm:p-9">
+        {/* Signup Card */}
+        <div className="bg-white rounded-3xl border border-[#E2E8F0] shadow-xl shadow-slate-200/60 p-7 sm:p-9">
 
-          {/* =========================
-              HEADER
-          ========================= */}
-
-          <div className="text-center mb-7">
-
-            <div className="mx-auto mb-4 w-14 h-14 rounded-full bg-red-600 flex items-center justify-center">
-
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="mx-auto mb-5 w-14 h-14 rounded-2xl bg-[#2563EB] flex items-center justify-center shadow-lg shadow-blue-200">
               <svg
-                className="w-7 h-7 text-white"
+                className="w-7 h-7 text-white ml-0.5"
                 fill="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
-                <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8ZM9.6 15.9V8.1l6.5 3.9-6.5 3.9Z" />
+                <path d="M8 5v14l11-7L8 5Z" />
               </svg>
-
             </div>
 
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-extrabold tracking-tight text-[#0F172A]">
               Create your account
             </h1>
 
-            <p className="mt-2 text-gray-500 text-sm">
+            <p className="mt-2 text-[#64748B] text-sm">
               Join the community and start watching
             </p>
-
           </div>
 
-          {/* =========================
-              ERROR
-          ========================= */}
-
+          {/* Error */}
           {error && (
             <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
-              <p className="text-sm text-red-600">
+              <p className="text-sm font-medium text-red-600">
                 {error}
               </p>
             </div>
           )}
 
-          {/* =========================
-              FORM
-          ========================= */}
-
-          <form
-            onSubmit={handleSignup}
-            className="space-y-5"
-          >
+          {/* Form */}
+          <form onSubmit={handleSignup} className="space-y-5">
 
             {/* Full Name */}
-
             <div>
               <label
                 htmlFor="fullname"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-semibold text-[#0F172A] mb-2"
               >
                 Full Name
               </label>
@@ -170,16 +133,24 @@ export default function Signup() {
                 value={signupData.fullname}
                 placeholder="Enter your full name"
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-gray-50 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                autoComplete="name"
+                className="
+                  w-full px-4 py-3 rounded-xl
+                  border border-[#CBD5E1]
+                  bg-white text-[#0F172A]
+                  placeholder-[#94A3B8]
+                  outline-none transition-all
+                  focus:border-[#2563EB]
+                  focus:ring-4 focus:ring-blue-100
+                "
               />
             </div>
 
             {/* Email */}
-
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-semibold text-[#0F172A] mb-2"
               >
                 Email
               </label>
@@ -191,16 +162,24 @@ export default function Signup() {
                 value={signupData.email}
                 placeholder="Enter your email"
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-gray-50 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                autoComplete="email"
+                className="
+                  w-full px-4 py-3 rounded-xl
+                  border border-[#CBD5E1]
+                  bg-white text-[#0F172A]
+                  placeholder-[#94A3B8]
+                  outline-none transition-all
+                  focus:border-[#2563EB]
+                  focus:ring-4 focus:ring-blue-100
+                "
               />
             </div>
 
             {/* Username */}
-
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-semibold text-[#0F172A] mb-2"
               >
                 Username
               </label>
@@ -212,16 +191,24 @@ export default function Signup() {
                 value={signupData.username}
                 placeholder="Choose a username"
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-gray-50 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                autoComplete="username"
+                className="
+                  w-full px-4 py-3 rounded-xl
+                  border border-[#CBD5E1]
+                  bg-white text-[#0F172A]
+                  placeholder-[#94A3B8]
+                  outline-none transition-all
+                  focus:border-[#2563EB]
+                  focus:ring-4 focus:ring-blue-100
+                "
               />
             </div>
 
             {/* Password */}
-
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-semibold text-[#0F172A] mb-2"
               >
                 Password
               </label>
@@ -233,46 +220,75 @@ export default function Signup() {
                 value={signupData.password}
                 placeholder="Create a password"
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-gray-50 outline-none transition focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                autoComplete="new-password"
+                className="
+                  w-full px-4 py-3 rounded-xl
+                  border border-[#CBD5E1]
+                  bg-white text-[#0F172A]
+                  placeholder-[#94A3B8]
+                  outline-none transition-all
+                  focus:border-[#2563EB]
+                  focus:ring-4 focus:ring-blue-100
+                "
               />
             </div>
 
-            {/* =========================
-                AVATAR
-            ========================= */}
-
+            {/* Profile Picture */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-[#0F172A] mb-2">
                 Profile Picture
               </label>
 
-              <label className="flex items-center justify-center w-full h-24 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
-
+              <label
+                className="
+                  flex items-center justify-center
+                  w-full min-h-24 px-4
+                  border-2 border-dashed border-[#CBD5E1]
+                  rounded-xl cursor-pointer
+                  bg-slate-50
+                  hover:bg-blue-50 hover:border-blue-300
+                  transition-all
+                  overflow-hidden
+                "
+              >
                 {avatar ? (
                   <div className="flex items-center gap-3">
-
                     <img
                       src={URL.createObjectURL(avatar)}
                       alt="Avatar preview"
-                      className="w-14 h-14 rounded-full object-cover"
+                      className="w-14 h-14 rounded-full object-cover ring-2 ring-blue-100"
                     />
 
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm font-medium text-[#64748B] truncate max-w-[220px]">
                       {avatar.name}
                     </span>
-
                   </div>
                 ) : (
                   <div className="text-center">
+                    <div className="mx-auto mb-2 w-9 h-9 rounded-full bg-blue-100 text-[#2563EB] flex items-center justify-center">
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M12 14a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-7 7a7 7 0 0 1 14 0"
+                        />
+                      </svg>
+                    </div>
 
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-sm font-semibold text-[#64748B]">
                       Choose profile picture
                     </p>
 
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-[#94A3B8] mt-1">
                       PNG, JPG or JPEG
                     </p>
-
                   </div>
                 )}
 
@@ -284,46 +300,65 @@ export default function Signup() {
                     setAvatar(e.target.files[0] || null)
                   }
                 />
-
               </label>
             </div>
 
-            {/* =========================
-                COVER IMAGE
-            ========================= */}
-
+            {/* Cover Image */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-[#0F172A] mb-2">
                 Cover Image
               </label>
 
-              <label className="flex items-center justify-center w-full h-24 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition overflow-hidden">
-
+              <label
+                className="
+                  flex items-center justify-center
+                  w-full min-h-24 px-4
+                  border-2 border-dashed border-[#CBD5E1]
+                  rounded-xl cursor-pointer
+                  bg-slate-50
+                  hover:bg-blue-50 hover:border-blue-300
+                  transition-all
+                  overflow-hidden
+                "
+              >
                 {coverimage ? (
                   <div className="flex items-center gap-3">
-
                     <img
                       src={URL.createObjectURL(coverimage)}
                       alt="Cover preview"
-                      className="h-16 w-28 rounded-lg object-cover"
+                      className="h-16 w-28 rounded-lg object-cover ring-2 ring-blue-100"
                     />
 
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm font-medium text-[#64748B] truncate max-w-[220px]">
                       {coverimage.name}
                     </span>
-
                   </div>
                 ) : (
                   <div className="text-center">
+                    <div className="mx-auto mb-2 w-9 h-9 rounded-full bg-blue-100 text-[#2563EB] flex items-center justify-center">
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4 16l4.5-5 3.5 4 2.5-3 5.5 6M5 20h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1Z"
+                        />
+                      </svg>
+                    </div>
 
-                    <p className="text-sm font-medium text-gray-600">
+                    <p className="text-sm font-semibold text-[#64748B]">
                       Choose cover image
                     </p>
 
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="text-xs text-[#94A3B8] mt-1">
                       PNG, JPG or JPEG
                     </p>
-
                   </div>
                 )}
 
@@ -335,43 +370,56 @@ export default function Signup() {
                     setCoverimage(e.target.files[0] || null)
                   }
                 />
-
               </label>
             </div>
 
-            {/* =========================
-                SIGNUP BUTTON
-            ========================= */}
-
+            {/* Signup Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl bg-red-600 text-white font-semibold transition hover:bg-red-700 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+              className="
+                w-full py-3 rounded-xl
+                bg-[#2563EB] text-white
+                font-semibold
+                shadow-sm
+                hover:bg-[#1D4ED8]
+                hover:shadow-md
+                active:scale-[0.98]
+                transition-all duration-200
+                disabled:opacity-60
+                disabled:cursor-not-allowed
+              "
             >
               {loading ? "Creating account..." : "Create Account"}
             </button>
-
           </form>
 
-          {/* =========================
-              LOGIN
-          ========================= */}
-
-          <div className="mt-7 text-center text-sm text-gray-500">
-
-            <span>Already have an account? </span>
+          {/* Login */}
+          <div className="mt-7 pt-6 border-t border-[#E2E8F0] text-center text-sm">
+            <span className="text-[#64748B]">
+              Already have an account?{" "}
+            </span>
 
             <button
               type="button"
               onClick={() => navigate("/login")}
-              className="font-semibold text-red-600 hover:text-red-700"
+              className="
+                font-semibold
+                text-[#2563EB]
+                hover:text-[#1D4ED8]
+                transition-colors
+              "
             >
               Login
             </button>
-
           </div>
-
         </div>
+
+        {/* Brand */}
+        <p className="text-center text-xs text-[#94A3B8] mt-5">
+          MyTube · Your video community
+        </p>
+
       </div>
     </div>
   );

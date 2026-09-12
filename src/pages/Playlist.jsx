@@ -52,10 +52,6 @@ const Playlist = () => {
 
       setPlaylists(response.data.data || []);
     } catch (error) {
-      console.error(
-        "Get playlists error:",
-        error.response?.data || error.message
-      );
 
       // A new user having zero playlists is NOT an error
       if (error.response?.status === 404) {
@@ -97,10 +93,6 @@ const Playlist = () => {
 
       setAllVideos(response.data.data || []);
     } catch (error) {
-      console.error(
-        "Get all videos error:",
-        error.response?.data || error.message
-      );
 
       setError(
         error.response?.data?.message ||
@@ -129,10 +121,6 @@ const Playlist = () => {
 
       return response.data.data;
     } catch (error) {
-      console.error(
-        `Get video ${videoId} error:`,
-        error.response?.data || error.message
-      );
 
       return null;
     }
@@ -226,10 +214,6 @@ const Playlist = () => {
 
       await getPlaylists();
     } catch (error) {
-      console.error(
-        "Create playlist error:",
-        error.response?.data || error.message
-      );
 
       setError(
         error.response?.data?.message ||
@@ -254,18 +238,6 @@ const Playlist = () => {
         }
       );
 
-      console.log("Raw playlist:", response.data);
-
-      const playlist = response.data.data;
-
-      const playlistWithVideos =
-        await loadPlaylistVideos(playlist);
-
-      console.log(
-        "Playlist with videos:",
-        playlistWithVideos
-      );
-
       setSelectedPlaylist(playlistWithVideos);
       setSelectedVideoId("");
       setShowEditForm(false);
@@ -278,10 +250,6 @@ const Playlist = () => {
           });
       }, 100);
     } catch (error) {
-      console.error(
-        "Open playlist error:",
-        error.response?.data || error.message
-      );
 
       setError(
         error.response?.data?.message ||
@@ -320,28 +288,11 @@ const Playlist = () => {
     try {
       setError("");
 
-      console.log("Adding video:", {
-        playlistId: selectedPlaylist._id,
-        videoId: selectedVideoId,
-      });
-
-      await axios.post(
-        `${API}/playlists/addVideoToPlaylist/${selectedPlaylist._id}/${selectedVideoId}`,
-        {},
-        {
-          withCredentials: true,
-        }
-      );
-
       setSelectedVideoId("");
 
       // Reload playlist
       await openPlaylist(selectedPlaylist._id);
     } catch (error) {
-      console.error(
-        "Add video error:",
-        error.response?.data || error.message
-      );
 
       setError(
         error.response?.data?.message ||
@@ -377,10 +328,6 @@ const Playlist = () => {
 
       await openPlaylist(selectedPlaylist._id);
     } catch (error) {
-      console.error(
-        "Remove video error:",
-        error.response?.data || error.message
-      );
 
       setError(
         error.response?.data?.message ||
@@ -420,10 +367,6 @@ const Playlist = () => {
         setSelectedPlaylist(null);
       }
     } catch (error) {
-      console.error(
-        "Delete playlist error:",
-        error.response?.data || error.message
-      );
 
       setError(
         error.response?.data?.message ||
@@ -488,10 +431,6 @@ const Playlist = () => {
       await getPlaylists();
       await openPlaylist(playlistId);
     } catch (error) {
-      console.error(
-        "Update playlist error:",
-        error.response?.data || error.message
-      );
 
       setError(
         error.response?.data?.message ||
@@ -505,7 +444,7 @@ const Playlist = () => {
   // =========================================================
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-[#F8FAFC] p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
 
         {/* ===================================================
@@ -514,11 +453,11 @@ const Playlist = () => {
 
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
+            <h1 className="text-3xl sm:text-4xl font-bold text-[#0F172A]">
               Playlists
             </h1>
 
-            <p className="text-gray-500 mt-2">
+            <p className="text-[#64748B] mt-2">
               Create and manage your video playlists
             </p>
           </div>
@@ -550,11 +489,11 @@ const Playlist = () => {
 
         <section>
           <div className="flex items-center justify-between mb-5">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-[#0F172A]">
               My Playlists
             </h2>
 
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-[#64748B]">
               {playlists.length}{" "}
               {playlists.length === 1
                 ? "playlist"
@@ -567,21 +506,21 @@ const Playlist = () => {
               {[1, 2, 3].map((item) => (
                 <div
                   key={item}
-                  className="h-44 rounded-2xl bg-white border border-gray-200 animate-pulse"
+                  className="h-44 rounded-2xl bg-white border border-[#E2E8F0] animate-pulse"
                 />
               ))}
             </div>
           ) : playlists.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-2xl p-10 text-center">
+            <div className="bg-white border border-[#E2E8F0] rounded-2xl p-10 text-center">
               <div className="text-5xl mb-4">
                 📂
               </div>
 
-              <h3 className="text-xl font-bold text-gray-900">
+              <h3 className="text-xl font-bold text-[#0F172A]">
                 No playlists yet
               </h3>
 
-              <p className="text-gray-500 mt-2">
+              <p className="text-[#64748B] mt-2">
                 Create your first playlist to organize
                 your videos.
               </p>
@@ -591,17 +530,17 @@ const Playlist = () => {
               {playlists.map((playlist) => (
                 <div
                   key={playlist._id}
-                  className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition"
+                  className="group bg-white border border-[#E2E8F0] rounded-2xl p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-2xl mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-2xl mb-4">
                     📂
                   </div>
 
-                  <h3 className="text-xl font-bold text-gray-900">
+                  <h3 className="text-xl font-bold text-[#0F172A]">
                     {playlist.name}
                   </h3>
 
-                  <p className="text-gray-500 mt-2 line-clamp-2 min-h-[48px]">
+                  <p className="text-[#64748B] mt-2 line-clamp-2 min-h-[48px]">
                     {playlist.description ||
                       "No description"}
                   </p>
@@ -613,7 +552,7 @@ const Playlist = () => {
                       onClick={() =>
                         openPlaylist(playlist._id)
                       }
-                      className="flex-1 px-4 py-2.5 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
+                      className="flex-1 px-4 py-2.5 rounded-xl bg-[#2563EB] text-white font-semibold hover:bg-[#1D4ED8] shadow-sm hover:shadow-md transition-all duration-200"
                     >
                       Open
                     </button>
@@ -649,7 +588,7 @@ const Playlist = () => {
                 setShowCreateForm(true);
                 setError("");
               }}
-              className="px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
+              className="px-6 py-3 rounded-xl bg-[#2563EB] text-white font-semibold hover:bg-[#1D4ED8] shadow-sm hover:shadow-md transition-all duration-200"
             >
               + Create Playlist
             </button>
@@ -661,16 +600,16 @@ const Playlist = () => {
         ==================================================== */}
 
         {showCreateForm && (
-          <div className="mt-6 bg-white border border-gray-200 rounded-2xl p-6 max-w-xl shadow-sm">
+          <div className="mt-6 bg-white border border-[#E2E8F0] rounded-2xl p-6 max-w-xl shadow-sm">
 
             <div className="flex justify-between items-center mb-5">
 
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-[#0F172A]">
                   Create Playlist
                 </h2>
 
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-[#64748B] mt-1">
                   Give your playlist a name and description.
                 </p>
               </div>
@@ -682,7 +621,7 @@ const Playlist = () => {
                   setPlaylistName("");
                   setPlaylistDescription("");
                 }}
-                className="w-9 h-9 rounded-full hover:bg-gray-100 text-xl"
+                className="w-9 h-9 rounded-full hover:bg-slate-100 text-xl"
               >
                 ×
               </button>
@@ -698,7 +637,7 @@ const Playlist = () => {
                   setPlaylistName(e.target.value)
                 }
                 placeholder="Playlist name"
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="w-full border border-[#CBD5E1] rounded-xl px-4 py-3 mb-4 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
 
               <textarea
@@ -710,14 +649,14 @@ const Playlist = () => {
                 }
                 placeholder="Playlist description"
                 rows="4"
-                className="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 resize-none"
+                className="w-full border border-[#CBD5E1] rounded-xl px-4 py-3 mb-4 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 resize-none"
               />
 
               <div className="flex gap-3">
 
                 <button
                   type="submit"
-                  className="px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700"
+                  className="px-5 py-3 rounded-xl bg-[#2563EB] text-white font-semibold hover:bg-[#1D4ED8]"
                 >
                   Create
                 </button>
@@ -729,7 +668,7 @@ const Playlist = () => {
                     setPlaylistName("");
                     setPlaylistDescription("");
                   }}
-                  className="px-5 py-3 rounded-xl border border-gray-300 font-semibold hover:bg-gray-50"
+                  className="px-5 py-3 rounded-xl border border-[#CBD5E1] font-semibold hover:bg-slate-50"
                 >
                   Cancel
                 </button>
@@ -747,7 +686,7 @@ const Playlist = () => {
         {selectedPlaylist && (
           <section
             id="selected-playlist"
-            className="mt-10 bg-white border border-gray-200 rounded-2xl p-5 sm:p-7 shadow-sm"
+            className="mt-10 bg-white border border-[#E2E8F0] rounded-3xl p-5 sm:p-7 shadow-sm shadow-slate-200/70"
           >
 
             {/* =================================================
@@ -760,17 +699,17 @@ const Playlist = () => {
 
                 <div className="flex items-center gap-3">
 
-                  <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-2xl">
+                  <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-2xl">
                     📂
                   </div>
 
                   <div>
 
-                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-[#0F172A]">
                       {selectedPlaylist.name}
                     </h2>
 
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-[#64748B]">
                       {selectedPlaylist.videos?.length || 0}{" "}
                       videos
                     </p>
@@ -779,7 +718,7 @@ const Playlist = () => {
 
                 </div>
 
-                <p className="text-gray-500 mt-4 max-w-2xl">
+                <p className="text-[#64748B] mt-4 max-w-2xl">
                   {selectedPlaylist.description ||
                     "No description"}
                 </p>
@@ -791,7 +730,7 @@ const Playlist = () => {
                 <button
                   type="button"
                   onClick={startEditingPlaylist}
-                  className="px-4 py-2 rounded-xl border border-gray-300 font-semibold hover:bg-gray-50"
+                  className="px-4 py-2 rounded-xl border border-[#CBD5E1] font-semibold hover:bg-slate-50"
                 >
                   Edit
                 </button>
@@ -799,7 +738,7 @@ const Playlist = () => {
                 <button
                   type="button"
                   onClick={closePlaylist}
-                  className="px-4 py-2 rounded-xl border border-gray-300 font-semibold hover:bg-gray-50"
+                  className="px-4 py-2 rounded-xl border border-[#CBD5E1] font-semibold hover:bg-slate-50"
                 >
                   Close
                 </button>
@@ -815,7 +754,7 @@ const Playlist = () => {
             {showEditForm && (
               <form
                 onSubmit={handleUpdatePlaylist}
-                className="mt-6 bg-gray-50 border border-gray-200 rounded-2xl p-5"
+                className="mt-6 bg-gray-50 border border-[#E2E8F0] rounded-2xl p-5"
               >
 
                 <h3 className="text-xl font-bold mb-4">
@@ -829,7 +768,7 @@ const Playlist = () => {
                     setPlaylistName(e.target.value)
                   }
                   placeholder="Playlist name"
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4 bg-white outline-none focus:border-blue-500"
+                  className="w-full border border-[#CBD5E1] rounded-xl px-4 py-3 mb-4 bg-white outline-none focus:border-blue-500"
                 />
 
                 <textarea
@@ -841,14 +780,14 @@ const Playlist = () => {
                   }
                   placeholder="Playlist description"
                   rows="3"
-                  className="w-full border border-gray-300 rounded-xl px-4 py-3 mb-4 bg-white outline-none focus:border-blue-500 resize-none"
+                  className="w-full border border-[#CBD5E1] rounded-xl px-4 py-3 mb-4 bg-white outline-none focus:border-blue-500 resize-none"
                 />
 
                 <div className="flex gap-3">
 
                   <button
                     type="submit"
-                    className="px-5 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700"
+                    className="px-5 py-3 rounded-xl bg-[#2563EB] text-white font-semibold hover:bg-[#1D4ED8]"
                   >
                     Save Changes
                   </button>
@@ -858,7 +797,7 @@ const Playlist = () => {
                     onClick={() =>
                       setShowEditForm(false)
                     }
-                    className="px-5 py-3 rounded-xl border border-gray-300 font-semibold hover:bg-white"
+                    className="px-5 py-3 rounded-xl border border-[#CBD5E1] font-semibold hover:bg-white"
                   >
                     Cancel
                   </button>
@@ -876,11 +815,11 @@ const Playlist = () => {
 
               <div className="mb-5">
 
-                <h3 className="text-xl font-bold text-gray-900">
+                <h3 className="text-xl font-bold text-[#0F172A]">
                   Add Video
                 </h3>
 
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-[#64748B] mt-1">
                   Choose any published video from the app.
                 </p>
 
@@ -893,7 +832,7 @@ const Playlist = () => {
                   {[1, 2, 3].map((item) => (
                     <div
                       key={item}
-                      className="h-64 rounded-2xl bg-gray-100 animate-pulse"
+                      className="h-64 rounded-2xl bg-slate-100 animate-pulse"
                     />
                   ))}
 
@@ -901,8 +840,8 @@ const Playlist = () => {
 
               ) : allVideos.length === 0 ? (
 
-                <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 text-center">
-                  <p className="text-gray-500">
+                <div className="rounded-xl border border-[#E2E8F0] bg-gray-50 p-6 text-center">
+                  <p className="text-[#64748B]">
                     No published videos are available.
                   </p>
                 </div>
@@ -924,8 +863,8 @@ const Playlist = () => {
                         }
                         className={`bg-white border-2 rounded-2xl overflow-hidden cursor-pointer transition ${
                           isSelected
-                            ? "border-blue-600 shadow-md"
-                            : "border-gray-200 hover:border-gray-300"
+                            ? "border-[#2563EB] shadow-md"
+                            : "border-[#E2E8F0] hover:border-[#CBD5E1]"
                         }`}
                       >
 
@@ -938,7 +877,7 @@ const Playlist = () => {
                           />
 
                           {isSelected && (
-                            <div className="absolute top-3 right-3 w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold">
+                            <div className="absolute top-3 right-3 w-9 h-9 rounded-full bg-[#2563EB] text-white flex items-center justify-center font-bold">
                               ✓
                             </div>
                           )}
@@ -947,18 +886,18 @@ const Playlist = () => {
 
                         <div className="p-4">
 
-                          <h4 className="font-bold text-gray-900 line-clamp-2">
+                          <h4 className="font-bold text-[#0F172A] line-clamp-2">
                             {video.title ||
                               "Untitled video"}
                           </h4>
 
-                          <p className="text-sm text-gray-500 mt-2 line-clamp-2">
+                          <p className="text-sm text-[#64748B] mt-2 line-clamp-2">
                             {video.description ||
                               "No description"}
                           </p>
 
                           {video.views !== undefined && (
-                            <p className="text-xs text-gray-400 mt-2">
+                            <p className="text-xs text-[#94A3B8] mt-2">
                               {video.views} views
                             </p>
                           )}
@@ -976,7 +915,7 @@ const Playlist = () => {
                 type="button"
                 onClick={handleAddVideo}
                 disabled={!selectedVideoId}
-                className="mt-5 px-6 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                className="mt-5 px-6 py-3 rounded-xl bg-[#2563EB] text-white font-semibold hover:bg-[#1D4ED8] shadow-sm hover:shadow-md transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Add Selected Video
               </button>
@@ -992,16 +931,16 @@ const Playlist = () => {
               <div className="flex items-center justify-between mb-5">
 
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">
+                  <h3 className="text-xl font-bold text-[#0F172A]">
                     Playlist Videos
                   </h3>
 
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-[#64748B] mt-1">
                     Videos currently inside this playlist.
                   </p>
                 </div>
 
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-[#64748B]">
                   {selectedPlaylist.videos?.length || 0}{" "}
                   videos
                 </span>
@@ -1012,9 +951,9 @@ const Playlist = () => {
 
                 <div className="py-10 text-center">
 
-                  <div className="inline-block w-8 h-8 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin" />
+                  <div className="inline-block w-8 h-8 border-4 border-[#E2E8F0] border-t-blue-600 rounded-full animate-spin" />
 
-                  <p className="text-gray-500 mt-3">
+                  <p className="text-[#64748B] mt-3">
                     Loading playlist...
                   </p>
 
@@ -1023,17 +962,17 @@ const Playlist = () => {
               ) : !selectedPlaylist.videos ||
                 selectedPlaylist.videos.length === 0 ? (
 
-                <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-10 text-center">
+                <div className="rounded-2xl border border-dashed border-[#CBD5E1] bg-gray-50 p-10 text-center">
 
                   <div className="text-5xl mb-4">
                     🎬
                   </div>
 
-                  <h4 className="text-lg font-bold text-gray-900">
+                  <h4 className="text-lg font-bold text-[#0F172A]">
                     No videos in this playlist
                   </h4>
 
-                  <p className="text-gray-500 mt-2">
+                  <p className="text-[#64748B] mt-2">
                     Select any published video above and
                     add it to this playlist.
                   </p>
@@ -1054,7 +993,7 @@ const Playlist = () => {
                       return (
                         <div
                           key={video._id || index}
-                          className="group flex flex-col sm:flex-row gap-4 border border-gray-200 rounded-2xl p-3 sm:p-4 hover:border-gray-300 hover:shadow-sm transition"
+                          className="group flex flex-col sm:flex-row gap-4 border border-[#E2E8F0] rounded-2xl p-3 sm:p-4 hover:border-[#CBD5E1] hover:shadow-sm transition"
                         >
 
                           {/* THUMBNAIL */}
@@ -1095,18 +1034,18 @@ const Playlist = () => {
                             className="flex-1 min-w-0 cursor-pointer"
                           >
 
-                            <h4 className="font-bold text-lg text-gray-900 line-clamp-2">
+                            <h4 className="font-bold text-lg text-[#0F172A] line-clamp-2">
                               {video.title ||
                                 "Untitled video"}
                             </h4>
 
-                            <p className="text-sm text-gray-500 mt-2 line-clamp-2">
+                            <p className="text-sm text-[#64748B] mt-2 line-clamp-2">
                               {video.description ||
                                 "No description"}
                             </p>
 
                             {video.views !== undefined && (
-                              <p className="text-xs text-gray-400 mt-2">
+                              <p className="text-xs text-[#94A3B8] mt-2">
                                 {video.views} views
                               </p>
                             )}
