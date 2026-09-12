@@ -24,7 +24,7 @@ export default function Channel() {
             setError("");
 
             const response = await axios.get(
-                `${API}/${username}`,
+                `${API}/users/${username}`,
                 {
                     withCredentials: true,
                 }
@@ -55,7 +55,7 @@ export default function Channel() {
             setVideosError("");
 
             const response = await axios.get(
-               `${API}/${username}`,
+               `${API}/users/${username}`,
                 {
                     withCredentials: true,
                 }
