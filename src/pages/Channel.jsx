@@ -199,7 +199,7 @@ export default function Channel() {
 
                     {channel.coverImage ? (
                         <img
-                            src={channel.coverImage}
+                            src={channel.coverimage}
                             alt="Channel cover"
                             className="w-full h-full object-cover"
                         />
