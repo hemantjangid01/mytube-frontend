@@ -108,8 +108,12 @@ const EditProfile = () => {
       await updateAccount();
 
       if (avatar) {
-        await updateAvatar();
-      }
+  await updateAvatar();
+}
+
+if (coverImage) {
+  await updateCoverImage();
+}
 
       await getCurrentUser();
 
@@ -147,6 +151,16 @@ const EditProfile = () => {
       </div>
     );
   }
+  const updateCoverImage = async () => {
+  if (!coverImage) return;
+
+  const formData = new FormData();
+  formData.append("coverImage", coverImage);
+
+  await axios.patch(`${API}/users/cover-image`, formData, {
+    withCredentials: true,
+  });
+};
 
   return (
     <div className="min-h-screen bg-gray-50">
