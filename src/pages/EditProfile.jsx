@@ -36,7 +36,7 @@ const EditProfile = () => {
       setEmail(user.email || "");
 
       setCurrentAvatar(user.avatar || "");
-      setCurrentCoverImage(user.coverImage || "");
+      setCurrentCoverImage(user.coverimage || "");
     } catch (error) {
       console.log("Error fetching user:", error);
 
