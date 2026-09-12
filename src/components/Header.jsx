@@ -87,24 +87,22 @@ const API = import.meta.env.VITE_API_URL;;
 
   const handleLogout = async () => {
     try {
-      await axios.post(
-        `${API}/users/logout`,
-        {},
-        {
-          withCredentials: true,
-        }
-      );
+        await axios.post(
+            `${API}/users/logout`,
+            {},
+            {
+                withCredentials: true,
+            }
+        );
 
-      setUser(null);
-
-      navigate("/login");
+        window.location.replace("/login");
     } catch (error) {
-      console.error(
-        "Logout error:",
-        error.response?.data || error.message
-      );
+        console.error(
+            "Logout error:",
+            error.response?.data || error.message
+        );
     }
-  };
+};
 
   return (
     <header className="h-16 border-b border-gray-200 bg-blue-400 flex items-center px-4 sm:px-6 shadow-sm">
