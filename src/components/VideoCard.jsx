@@ -6,6 +6,7 @@ export default function VideoCard({ video }) {
   const navigate = useNavigate();
 
   const ownerName =
+   video?.owner?.fullname ||
     video?.owner?.username ||
     video?.owner?.userName ||
     "Unknown creator";
