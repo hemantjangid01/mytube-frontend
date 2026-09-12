@@ -74,7 +74,7 @@ export default function Login() {
             </h1>
 
             <p className="text-[#64748B] mt-2">
-              Sign in to continue to MyTube
+              Login in to continue to MyTube
             </p>
           </div>
 
