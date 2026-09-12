@@ -197,7 +197,7 @@ export default function Channel() {
 
                 <div className="relative w-full h-52 sm:h-64 md:h-72 bg-gray-200 overflow-hidden">
 
-                    {channel.coverImage ? (
+                    {channel.coverimage ? (
                         <img
                             src={channel.coverimage}
                             alt="Channel cover"
