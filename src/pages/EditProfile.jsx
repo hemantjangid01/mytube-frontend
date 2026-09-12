@@ -26,7 +26,7 @@ const EditProfile = () => {
       setLoading(true);
       setError("");
 
-      const response = await axios.get(`${API}/current-user`, {
+      const response = await axios.get(`${API}/users/current-user`, {
         withCredentials: true,
       });
 
@@ -58,7 +58,7 @@ const EditProfile = () => {
   // =========================
   const updateAccount = async () => {
     await axios.patch(
-      `${API}/update-account`,
+      `${API}/users/update-account`,
       {
         fullname: fullname.trim(),
         email: email.trim(),
@@ -79,7 +79,7 @@ const EditProfile = () => {
 
     formData.append("avatar", avatar);
 
-    await axios.patch(`${API}/avatar`, formData, {
+    await axios.patch(`${API}/users/avatar`, formData, {
       withCredentials: true,
     });
   };
