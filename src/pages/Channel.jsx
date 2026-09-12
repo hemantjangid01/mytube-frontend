@@ -55,7 +55,7 @@ export default function Channel() {
             setVideosError("");
 
             const response = await axios.get(
-               `${API}/users/${username}`,
+               `${API}/videos/channel/${username}`,
                 {
                     withCredentials: true,
                 }
