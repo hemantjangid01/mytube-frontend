@@ -80,7 +80,7 @@ export default function EditVideo() {
             }
 
             await axios.patch(
-                `${API}/${videoId}`,
+                `${API}/videos/${videoId}`,
                 formData,
                 {
                     withCredentials: true,
