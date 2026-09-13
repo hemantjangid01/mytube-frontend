@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
@@ -10,6 +9,8 @@ const Watch = () => {
 
   const [video, setVideo] = useState(null);
   const [comments, setComments] = useState([]);
+
+  const [currentUser, setCurrentUser] = useState(null);
 
   const [commentText, setCommentText] = useState("");
 
@@ -23,6 +24,25 @@ const Watch = () => {
   const [isLiked, setIsLiked] = useState(false);
 
   const [loading, setLoading] = useState(true);
+
+  // =========================
+  // GET CURRENT USER
+  // =========================
+
+  const getCurrentUser = async () => {
+    try {
+      const response = await axios.get(
+        `${API}/users/current-user`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      setCurrentUser(response.data?.data || null);
+    } catch (error) {
+      setCurrentUser(null);
+    }
+  };
 
   // =========================
   // GET VIDEO
@@ -111,6 +131,7 @@ const Watch = () => {
     getVideo();
     getComments();
     getLikeInfo();
+    getCurrentUser();
     addToHistory();
   }, [videoId]);
 
@@ -168,7 +189,7 @@ const Watch = () => {
   };
 
   // =========================
-  // DELETE COMMENT
+  // DELETE COMMENT / REPLY
   // =========================
 
   const handleDeleteComment = async (commentId) => {
@@ -180,11 +201,7 @@ const Watch = () => {
         }
       );
 
-      setComments((prev) =>
-        prev.filter(
-          (comment) => comment._id !== commentId
-        )
-      );
+      await getComments();
     } catch (error) {
       // Delete action failed
     }
@@ -200,7 +217,7 @@ const Watch = () => {
   };
 
   // =========================
-  // UPDATE COMMENT
+  // UPDATE COMMENT / REPLY
   // =========================
 
   const handleUpdateComment = async (commentId) => {
@@ -251,6 +268,35 @@ const Watch = () => {
     } catch (error) {
       // Reply action failed
     }
+  };
+
+  // =========================
+  // OWNERSHIP CHECK
+  // =========================
+
+  const getId = (value) => {
+    if (!value) return null;
+
+    if (typeof value === "object") {
+      return value._id?.toString() || null;
+    }
+
+    return value.toString();
+  };
+
+  const isCommentOwner = (comment) => {
+    const currentUserId = getId(currentUser?._id);
+
+    const ownerId =
+      getId(comment?.owner) ||
+      getId(comment?.user) ||
+      getId(comment?.userId);
+
+    return (
+      currentUserId &&
+      ownerId &&
+      currentUserId === ownerId
+    );
   };
 
   // =========================
@@ -336,7 +382,6 @@ const Watch = () => {
 
   return (
     <main className="min-h-screen bg-[#F8FAFC]">
-
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
         {/* =========================
@@ -357,7 +402,6 @@ const Watch = () => {
         ========================= */}
 
         <section className="mt-5">
-
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
             {video.title}
           </h1>
@@ -449,7 +493,6 @@ const Watch = () => {
           ========================= */}
 
           <div className="mt-5 bg-white border border-gray-200 rounded-2xl p-5">
-
             <h2 className="font-semibold text-gray-900">
               Description
             </h2>
@@ -457,9 +500,7 @@ const Watch = () => {
             <p className="mt-2 text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-wrap">
               {video.description || "No description available."}
             </p>
-
           </div>
-
         </section>
 
         {/* =========================
@@ -471,7 +512,6 @@ const Watch = () => {
           {/* HEADER */}
 
           <div className="flex items-center gap-2 mb-6">
-
             <h2 className="text-xl font-bold text-gray-900">
               Comments
             </h2>
@@ -479,7 +519,6 @@ const Watch = () => {
             <span className="px-2 py-0.5 rounded-full bg-blue-50 text-[#2563EB] text-xs font-semibold">
               {comments.length}
             </span>
-
           </div>
 
           {/* =========================
@@ -539,11 +578,9 @@ const Watch = () => {
           ========================= */}
 
           <div className="space-y-6">
-
             {comments.length === 0 ? (
 
               <div className="py-12 text-center">
-
                 <div className="w-14 h-14 mx-auto rounded-full bg-blue-50 flex items-center justify-center">
                   <svg
                     className="w-6 h-6 text-[#2563EB]"
@@ -568,329 +605,441 @@ const Watch = () => {
                 <p className="text-sm text-gray-400 mt-1">
                   Be the first to share your thoughts.
                 </p>
-
               </div>
 
             ) : (
 
-              comments.map((comment) => (
+              comments.map((comment) => {
 
-                <article
-                  key={comment._id}
-                  className="border-b border-gray-100 pb-6 last:border-0"
-                >
+                const isOwner = isCommentOwner(comment);
 
-                  {/* COMMENT */}
+                return (
+                  <article
+                    key={comment._id}
+                    className="border-b border-gray-100 pb-6 last:border-0"
+                  >
 
-                  <div className="flex gap-3">
+                    {/* COMMENT */}
 
-                    {/* AVATAR */}
+                    <div className="flex gap-3">
 
-                    {comment.owner?.avatar ? (
+                      {/* AVATAR */}
 
-                      <img
-                        src={comment.owner.avatar}
-                        alt={getUserName(comment.owner)}
-                        className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                      />
-
-                    ) : (
-
-                      <div className="w-10 h-10 rounded-full bg-blue-50 text-[#2563EB] flex items-center justify-center flex-shrink-0">
-                        <span className="font-semibold text-sm">
-                          {getInitial(comment.owner)}
-                        </span>
-                      </div>
-
-                    )}
-
-                    <div className="flex-1 min-w-0">
-
-                      {/* OWNER */}
-
-                      <div className="flex flex-wrap items-center gap-2 mb-1">
-
-                        <span className="font-semibold text-gray-900">
-                          {getUserName(comment.owner)}
-                        </span>
-
-                        {comment.owner?.username && (
-                          <span className="text-sm text-gray-400">
-                            @{comment.owner.username}
+                      {comment.owner?.avatar ? (
+                        <img
+                          src={comment.owner.avatar}
+                          alt={getUserName(comment.owner)}
+                          className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-blue-50 text-[#2563EB] flex items-center justify-center flex-shrink-0">
+                          <span className="font-semibold text-sm">
+                            {getInitial(comment.owner)}
                           </span>
+                        </div>
+                      )}
+
+                      <div className="flex-1 min-w-0">
+
+                        {/* OWNER */}
+
+                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                          <span className="font-semibold text-gray-900">
+                            {getUserName(comment.owner)}
+                          </span>
+
+                          {comment.owner?.username && (
+                            <span className="text-sm text-gray-400">
+                              @{comment.owner.username}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* EDIT COMMENT */}
+
+                        {editingId === comment._id ? (
+
+                          <div className="flex flex-col gap-3">
+                            <input
+                              value={editText}
+                              onChange={(e) =>
+                                setEditText(e.target.value)
+                              }
+                              className="
+                                w-full
+                                px-4
+                                py-3
+                                bg-gray-50
+                                border
+                                border-gray-200
+                                rounded-xl
+                                outline-none
+                                text-sm
+                                focus:bg-white
+                                focus:border-[#2563EB]
+                                focus:ring-2
+                                focus:ring-blue-100
+                              "
+                            />
+
+                            <div className="flex gap-2">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleUpdateComment(comment._id)
+                                }
+                                className="
+                                  px-4
+                                  py-2
+                                  bg-[#2563EB]
+                                  text-white
+                                  rounded-lg
+                                  text-sm
+                                  font-medium
+                                  hover:bg-[#1D4ED8]
+                                "
+                              >
+                                Save
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setEditingId(null);
+                                  setEditText("");
+                                }}
+                                className="
+                                  px-4
+                                  py-2
+                                  bg-gray-100
+                                  text-gray-700
+                                  rounded-lg
+                                  text-sm
+                                  font-medium
+                                  hover:bg-gray-200
+                                "
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+
+                        ) : (
+
+                          <>
+                            {/* COMMENT TEXT */}
+
+                            <p className="text-gray-700 leading-relaxed break-words">
+                              {comment.content}
+                            </p>
+
+                            {/* ACTIONS */}
+
+                            <div className="flex items-center gap-4 mt-3">
+
+                              {/* ONLY OWNER CAN EDIT */}
+
+                              {isOwner && (
+                                <button
+                                  type="button"
+                                  onClick={() => startEdit(comment)}
+                                  className="text-sm font-medium text-gray-500 hover:text-[#2563EB] transition"
+                                >
+                                  Edit
+                                </button>
+                              )}
+
+                              {/* ONLY OWNER CAN DELETE */}
+
+                              {isOwner && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleDeleteComment(comment._id)
+                                  }
+                                  className="text-sm font-medium text-gray-500 hover:text-red-600 transition"
+                                >
+                                  Delete
+                                </button>
+                              )}
+
+                              {/* EVERYONE CAN REPLY */}
+
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setReplyingId(comment._id);
+                                  setReplyText("");
+                                }}
+                                className="text-sm font-medium text-gray-500 hover:text-[#2563EB] transition"
+                              >
+                                Reply
+                              </button>
+
+                            </div>
+                          </>
                         )}
 
                       </div>
-
-                      {/* EDIT */}
-
-                      {editingId === comment._id ? (
-
-                        <div className="flex flex-col gap-3">
-
-                          <input
-                            value={editText}
-                            onChange={(e) =>
-                              setEditText(e.target.value)
-                            }
-                            className="
-                              w-full
-                              px-4
-                              py-3
-                              bg-gray-50
-                              border
-                              border-gray-200
-                              rounded-xl
-                              outline-none
-                              text-sm
-                              focus:bg-white
-                              focus:border-[#2563EB]
-                              focus:ring-2
-                              focus:ring-blue-100
-                            "
-                          />
-
-                          <div className="flex gap-2">
-
-                            <button
-                              type="button"
-                              onClick={() =>
-                                handleUpdateComment(comment._id)
-                              }
-                              className="
-                                px-4
-                                py-2
-                                bg-[#2563EB]
-                                text-white
-                                rounded-lg
-                                text-sm
-                                font-medium
-                                hover:bg-[#1D4ED8]
-                              "
-                            >
-                              Save
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setEditingId(null);
-                                setEditText("");
-                              }}
-                              className="
-                                px-4
-                                py-2
-                                bg-gray-100
-                                text-gray-700
-                                rounded-lg
-                                text-sm
-                                font-medium
-                                hover:bg-gray-200
-                              "
-                            >
-                              Cancel
-                            </button>
-
-                          </div>
-
-                        </div>
-
-                      ) : (
-
-                        <>
-
-                          {/* COMMENT TEXT */}
-
-                          <p className="text-gray-700 leading-relaxed break-words">
-                            {comment.content}
-                          </p>
-
-                          {/* ACTIONS */}
-
-                          <div className="flex items-center gap-4 mt-3">
-
-                            <button
-                              type="button"
-                              onClick={() => startEdit(comment)}
-                              className="text-sm font-medium text-gray-500 hover:text-[#2563EB] transition"
-                            >
-                              Edit
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() =>
-                                handleDeleteComment(comment._id)
-                              }
-                              className="text-sm font-medium text-gray-500 hover:text-red-600 transition"
-                            >
-                              Delete
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setReplyingId(comment._id);
-                                setReplyText("");
-                              }}
-                              className="text-sm font-medium text-gray-500 hover:text-[#2563EB] transition"
-                            >
-                              Reply
-                            </button>
-
-                          </div>
-
-                        </>
-                      )}
-
                     </div>
 
-                  </div>
+                    {/* =========================
+                        REPLY INPUT
+                    ========================= */}
 
-                  {/* =========================
-                      REPLY INPUT
-                  ========================= */}
+                    {replyingId === comment._id && (
+                      <div className="mt-4 ml-10 sm:ml-12 flex flex-col sm:flex-row gap-2">
 
-                  {replyingId === comment._id && (
+                        <input
+                          type="text"
+                          placeholder="Write a reply..."
+                          value={replyText}
+                          onChange={(e) =>
+                            setReplyText(e.target.value)
+                          }
+                          className="
+                            flex-1
+                            px-4
+                            py-2.5
+                            bg-gray-50
+                            border
+                            border-gray-200
+                            rounded-lg
+                            outline-none
+                            text-sm
+                            focus:bg-white
+                            focus:border-[#2563EB]
+                          "
+                        />
 
-                    <div className="mt-4 ml-10 sm:ml-12 flex flex-col sm:flex-row gap-2">
-
-                      <input
-                        type="text"
-                        placeholder="Write a reply..."
-                        value={replyText}
-                        onChange={(e) =>
-                          setReplyText(e.target.value)
-                        }
-                        className="
-                          flex-1
-                          px-4
-                          py-2.5
-                          bg-gray-50
-                          border
-                          border-gray-200
-                          rounded-lg
-                          outline-none
-                          text-sm
-                          focus:bg-white
-                          focus:border-[#2563EB]
-                        "
-                      />
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleReply(comment._id)
-                        }
-                        className="
-                          px-4
-                          py-2.5
-                          bg-[#2563EB]
-                          text-white
-                          rounded-lg
-                          text-sm
-                          font-medium
-                          hover:bg-[#1D4ED8]
-                        "
-                      >
-                        Reply
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setReplyingId(null);
-                          setReplyText("");
-                        }}
-                        className="
-                          px-4
-                          py-2.5
-                          bg-gray-100
-                          text-gray-700
-                          rounded-lg
-                          text-sm
-                          font-medium
-                          hover:bg-gray-200
-                        "
-                      >
-                        Cancel
-                      </button>
-
-                    </div>
-                  )}
-
-                  {/* =========================
-                      REPLIES
-                  ========================= */}
-
-                  {comment.replies?.length > 0 && (
-
-                    <div className="mt-4 ml-6 sm:ml-12 pl-4 border-l-2 border-blue-100 space-y-3">
-
-                      {comment.replies.map((reply) => (
-
-                        <div
-                          key={reply._id}
-                          className="flex gap-3 bg-gray-50 rounded-xl px-4 py-3"
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleReply(comment._id)
+                          }
+                          className="
+                            px-4
+                            py-2.5
+                            bg-[#2563EB]
+                            text-white
+                            rounded-lg
+                            text-sm
+                            font-medium
+                            hover:bg-[#1D4ED8]
+                          "
                         >
+                          Reply
+                        </button>
 
-                          {reply.owner?.avatar ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setReplyingId(null);
+                            setReplyText("");
+                          }}
+                          className="
+                            px-4
+                            py-2.5
+                            bg-gray-100
+                            text-gray-700
+                            rounded-lg
+                            text-sm
+                            font-medium
+                            hover:bg-gray-200
+                          "
+                        >
+                          Cancel
+                        </button>
 
-                            <img
-                              src={reply.owner.avatar}
-                              alt={getUserName(reply.owner)}
-                              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-                            />
+                      </div>
+                    )}
 
-                          ) : (
+                    {/* =========================
+                        REPLIES
+                    ========================= */}
 
-                            <div className="w-8 h-8 rounded-full bg-blue-100 text-[#2563EB] flex items-center justify-center flex-shrink-0">
-                              <span className="text-xs font-semibold">
-                                {getInitial(reply.owner)}
-                              </span>
-                            </div>
+                    {comment.replies?.length > 0 && (
+                      <div className="mt-4 ml-6 sm:ml-12 pl-4 border-l-2 border-blue-100 space-y-3">
 
-                          )}
+                        {comment.replies.map((reply) => {
 
-                          <div className="min-w-0">
+                          const isReplyOwner =
+                            isCommentOwner(reply);
 
-                            <div className="flex flex-wrap items-center gap-2">
+                          return (
+                            <div
+                              key={reply._id}
+                              className="flex gap-3 bg-gray-50 rounded-xl px-4 py-3"
+                            >
 
-                              <p className="text-sm font-semibold text-gray-800">
-                                {getUserName(reply.owner)}
-                              </p>
+                              {/* REPLY AVATAR */}
 
-                              {reply.owner?.username && (
-                                <p className="text-xs text-gray-400">
-                                  @{reply.owner.username}
-                                </p>
+                              {reply.owner?.avatar ? (
+                                <img
+                                  src={reply.owner.avatar}
+                                  alt={getUserName(reply.owner)}
+                                  className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                                />
+                              ) : (
+                                <div className="w-8 h-8 rounded-full bg-blue-100 text-[#2563EB] flex items-center justify-center flex-shrink-0">
+                                  <span className="text-xs font-semibold">
+                                    {getInitial(reply.owner)}
+                                  </span>
+                                </div>
                               )}
 
+                              <div className="min-w-0 flex-1">
+
+                                {/* REPLY OWNER */}
+
+                                <div className="flex flex-wrap items-center gap-2">
+
+                                  <p className="text-sm font-semibold text-gray-800">
+                                    {getUserName(reply.owner)}
+                                  </p>
+
+                                  {reply.owner?.username && (
+                                    <p className="text-xs text-gray-400">
+                                      @{reply.owner.username}
+                                    </p>
+                                  )}
+
+                                </div>
+
+                                {/* REPLY EDIT */}
+
+                                {editingId === reply._id ? (
+
+                                  <div className="mt-2 flex flex-col gap-2">
+
+                                    <input
+                                      value={editText}
+                                      onChange={(e) =>
+                                        setEditText(e.target.value)
+                                      }
+                                      className="
+                                        w-full
+                                        px-3
+                                        py-2
+                                        bg-white
+                                        border
+                                        border-gray-200
+                                        rounded-lg
+                                        outline-none
+                                        text-sm
+                                        focus:border-[#2563EB]
+                                        focus:ring-2
+                                        focus:ring-blue-100
+                                      "
+                                    />
+
+                                    <div className="flex gap-2">
+
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          handleUpdateComment(
+                                            reply._id
+                                          )
+                                        }
+                                        className="
+                                          px-3
+                                          py-1.5
+                                          bg-[#2563EB]
+                                          text-white
+                                          rounded-lg
+                                          text-xs
+                                          font-medium
+                                          hover:bg-[#1D4ED8]
+                                        "
+                                      >
+                                        Save
+                                      </button>
+
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          setEditingId(null);
+                                          setEditText("");
+                                        }}
+                                        className="
+                                          px-3
+                                          py-1.5
+                                          bg-gray-200
+                                          text-gray-700
+                                          rounded-lg
+                                          text-xs
+                                          font-medium
+                                          hover:bg-gray-300
+                                        "
+                                      >
+                                        Cancel
+                                      </button>
+
+                                    </div>
+                                  </div>
+
+                                ) : (
+
+                                  <>
+                                    {/* REPLY TEXT */}
+
+                                    <p className="text-sm text-gray-700 mt-1 break-words">
+                                      {reply.content}
+                                    </p>
+
+                                    {/* REPLY ACTIONS */}
+
+                                    <div className="flex items-center gap-4 mt-2">
+
+                                      {/* ONLY REPLY OWNER */}
+
+                                      {isReplyOwner && (
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            startEdit(reply)
+                                          }
+                                          className="text-xs font-medium text-gray-500 hover:text-[#2563EB] transition"
+                                        >
+                                          Edit
+                                        </button>
+                                      )}
+
+                                      {/* ONLY REPLY OWNER */}
+
+                                      {isReplyOwner && (
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            handleDeleteComment(
+                                              reply._id
+                                            )
+                                          }
+                                          className="text-xs font-medium text-gray-500 hover:text-red-600 transition"
+                                        >
+                                          Delete
+                                        </button>
+                                      )}
+
+                                    </div>
+                                  </>
+                                )}
+
+                              </div>
                             </div>
+                          );
+                        })}
 
-                            <p className="text-sm text-gray-700 mt-1 break-words">
-                              {reply.content}
-                            </p>
+                      </div>
+                    )}
 
-                          </div>
-
-                        </div>
-
-                      ))}
-
-                    </div>
-                  )}
-
-                </article>
-
-              ))
-
+                  </article>
+                );
+              })
             )}
-
           </div>
-
         </section>
-
       </div>
     </main>
   );
