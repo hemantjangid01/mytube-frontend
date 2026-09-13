@@ -227,38 +227,41 @@ const Playlist = () => {
   // =========================================================
 
   const openPlaylist = async (playlistId) => {
-    try {
-      setPlaylistLoading(true);
-      setError("");
+  try {
+    setPlaylistLoading(true);
+    setError("");
 
-      const response = await axios.get(
-        `${API}/playlists/getPlayListById/${playlistId}`,
-        {
-          withCredentials: true,
-        }
-      );
+    const response = await axios.get(
+      `${API}/playlists/getPlayListById/${playlistId}`,
+      {
+        withCredentials: true,
+      }
+    );
 
-      setSelectedPlaylist(playlistWithVideos);
-      setSelectedVideoId("");
-      setShowEditForm(false);
+    const playlistWithVideos = await loadPlaylistVideos(
+      response.data.data
+    );
 
-      setTimeout(() => {
-        document
-          .getElementById("selected-playlist")
-          ?.scrollIntoView({
-            behavior: "smooth",
-          });
-      }, 100);
-    } catch (error) {
+    setSelectedPlaylist(playlistWithVideos);
+    setSelectedVideoId("");
+    setShowEditForm(false);
 
-      setError(
-        error.response?.data?.message ||
-          "Failed to open playlist"
-      );
-    } finally {
-      setPlaylistLoading(false);
-    }
-  };
+    setTimeout(() => {
+      document
+        .getElementById("selected-playlist")
+        ?.scrollIntoView({
+          behavior: "smooth",
+        });
+    }, 100);
+  } catch (error) {
+    setError(
+      error.response?.data?.message ||
+        "Failed to open playlist"
+    );
+  } finally {
+    setPlaylistLoading(false);
+  }
+};
 
   // =========================================================
   // CLOSE PLAYLIST
