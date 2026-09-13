@@ -103,11 +103,15 @@ export default function Channel() {
 
             await getChannel();
         } catch (error) {
-            setError(
-                error.response?.data?.message ||
-                "Failed to update subscription"
-            );
-        }
+            const message =
+                   error.response?.data?.message ||
+                 (typeof error.response?.data === "string"
+                     ? error.response.data
+                        : null) ||
+                       "Failed to update subscription";
+
+    setError(message);
+}
     };
 
     // =========================
