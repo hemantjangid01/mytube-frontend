@@ -278,31 +278,37 @@ const Playlist = () => {
   // =========================================================
 
   const handleAddVideo = async () => {
-    if (!selectedPlaylist?._id) {
-      setError("Open a playlist first");
-      return;
-    }
+  if (!selectedPlaylist?._id) {
+    setError("Open a playlist first");
+    return;
+  }
 
-    if (!selectedVideoId) {
-      setError("Select a video first");
-      return;
-    }
+  if (!selectedVideoId) {
+    setError("Select a video first");
+    return;
+  }
 
-    try {
-      setError("");
+  try {
+    setError("");
 
-      setSelectedVideoId("");
+    await axios.post(
+      `${API}/playlists/addVideoToPlaylist/${selectedPlaylist._id}/${selectedVideoId}`,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
 
-      // Reload playlist
-      await openPlaylist(selectedPlaylist._id);
-    } catch (error) {
+    setSelectedVideoId("");
 
-      setError(
-        error.response?.data?.message ||
-          "Failed to add video"
-      );
-    }
-  };
+    await openPlaylist(selectedPlaylist._id);
+  } catch (error) {
+    setError(
+      error.response?.data?.message ||
+        "Failed to add video"
+    );
+  }
+};
 
   // =========================================================
   // REMOVE VIDEO FROM PLAYLIST
