@@ -103,16 +103,17 @@ export default function Channel() {
 
             await getChannel();
         } catch (error) {
-            const message =
-                   error.response?.data||
-                 (typeof error.response?.data === "string"
-                     ? error.response.data
-                        : null) ||
-                       "Failed to update subscription";
+        if (error.response?.status === 400) {
+            setError("You cannot subscribe to your own channel.");
+            return;
+        }
 
-    setError(message);
-}
-    };
+        setError(
+            error.response?.data?.message ||
+            "Failed to update subscription"
+        );
+    }
+};
 
     // =========================
     // LOADING
