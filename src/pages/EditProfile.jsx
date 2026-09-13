@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -16,6 +15,17 @@ const EditProfile = () => {
   const [saving, setSaving] = useState(false);
 
   const [error, setError] = useState("");
+
+  // =========================
+  // CHANGE PASSWORD STATE
+  // =========================
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordMessage, setPasswordMessage] = useState("");
 
   const API = import.meta.env.VITE_API_URL;
 
@@ -96,7 +106,7 @@ const EditProfile = () => {
   };
 
   // =========================
-  // SAVE EVERYTHING
+  // SAVE PROFILE
   // =========================
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -141,6 +151,71 @@ const EditProfile = () => {
   };
 
   // =========================
+  // CHANGE PASSWORD
+  // =========================
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+
+    setPasswordError("");
+    setPasswordMessage("");
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      setPasswordError("All password fields are required");
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setPasswordError(
+        "New password must be at least 6 characters"
+      );
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError("New passwords do not match");
+      return;
+    }
+
+    if (oldPassword === newPassword) {
+      setPasswordError(
+        "New password must be different from your current password"
+      );
+      return;
+    }
+
+    try {
+      setPasswordLoading(true);
+
+      const response = await axios.post(
+        `${API}/users/change-password`,
+        {
+          oldPassword,
+          newPassword,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      setPasswordMessage(
+        response.data?.message ||
+          "Password changed successfully"
+      );
+
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (error) {
+      setPasswordError(
+        error.response?.data?.message ||
+          "Failed to change password"
+      );
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
+  // =========================
   // LOADING
   // =========================
   if (loading) {
@@ -175,7 +250,7 @@ const EditProfile = () => {
         </div>
 
         {/* =========================
-            ERROR
+            PROFILE ERROR
         ========================= */}
         {error && (
           <div className="mb-6 flex items-start gap-3 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm">
@@ -205,12 +280,10 @@ const EditProfile = () => {
           onSubmit={handleSubmit}
           className="bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden"
         >
-
           {/* =========================
               COVER
           ========================= */}
           <div className="relative">
-
             <div className="h-48 sm:h-56 bg-slate-100 overflow-hidden">
               {currentCoverImage ? (
                 <img
@@ -277,7 +350,6 @@ const EditProfile = () => {
               ACCOUNT INFORMATION
           ========================= */}
           <div className="px-6 sm:px-8 pt-20 pb-8 space-y-7">
-
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 shrink-0 rounded-xl bg-blue-50 text-[#2563EB] flex items-center justify-center">
                 <svg
@@ -377,17 +449,19 @@ const EditProfile = () => {
                 Profile Picture
               </label>
 
-              <label className="
-                flex items-center gap-4
-                p-4
-                border-2 border-dashed border-[#CBD5E1]
-                rounded-xl
-                cursor-pointer
-                bg-[#F8FAFC]
-                hover:bg-blue-50
-                hover:border-[#2563EB]
-                transition
-              ">
+              <label
+                className="
+                  flex items-center gap-4
+                  p-4
+                  border-2 border-dashed border-[#CBD5E1]
+                  rounded-xl
+                  cursor-pointer
+                  bg-[#F8FAFC]
+                  hover:bg-blue-50
+                  hover:border-[#2563EB]
+                  transition
+                "
+              >
                 <div className="w-12 h-12 shrink-0 rounded-full bg-blue-50 text-[#2563EB] flex items-center justify-center">
                   <svg
                     className="w-5 h-5"
@@ -427,7 +501,6 @@ const EditProfile = () => {
                 />
               </label>
 
-              {/* NEW AVATAR PREVIEW */}
               {avatar && (
                 <div className="mt-4 flex items-center gap-3">
                   <img
@@ -457,17 +530,19 @@ const EditProfile = () => {
                 Cover Image
               </label>
 
-              <label className="
-                flex items-center gap-4
-                p-4
-                border-2 border-dashed border-[#CBD5E1]
-                rounded-xl
-                cursor-pointer
-                bg-[#F8FAFC]
-                hover:bg-blue-50
-                hover:border-[#2563EB]
-                transition
-              ">
+              <label
+                className="
+                  flex items-center gap-4
+                  p-4
+                  border-2 border-dashed border-[#CBD5E1]
+                  rounded-xl
+                  cursor-pointer
+                  bg-[#F8FAFC]
+                  hover:bg-blue-50
+                  hover:border-[#2563EB]
+                  transition
+                "
+              >
                 <div className="w-12 h-12 shrink-0 rounded-xl bg-blue-50 text-[#2563EB] flex items-center justify-center">
                   <svg
                     className="w-5 h-5"
@@ -507,7 +582,6 @@ const EditProfile = () => {
                 />
               </label>
 
-              {/* NEW COVER PREVIEW */}
               {coverImage && (
                 <div className="mt-5">
                   <p className="text-sm font-semibold text-[#0F172A] mb-2">
@@ -527,16 +601,18 @@ const EditProfile = () => {
           </div>
 
           {/* =========================
-              FOOTER
+              PROFILE FOOTER
           ========================= */}
-          <div className="
-            px-6 sm:px-8 py-5
-            bg-[#F8FAFC]
-            border-t border-[#E2E8F0]
-            flex flex-col-reverse
-            sm:flex-row sm:justify-end
-            gap-3
-          ">
+          <div
+            className="
+              px-6 sm:px-8 py-5
+              bg-[#F8FAFC]
+              border-t border-[#E2E8F0]
+              flex flex-col-reverse
+              sm:flex-row sm:justify-end
+              gap-3
+            "
+          >
             <button
               type="button"
               disabled={saving}
@@ -578,6 +654,214 @@ const EditProfile = () => {
             </button>
           </div>
         </form>
+
+        {/* =========================
+            CHANGE PASSWORD CARD
+        ========================= */}
+        <section className="mt-8 bg-white border border-[#E2E8F0] rounded-2xl shadow-sm overflow-hidden">
+          <div className="px-6 sm:px-8 py-6 border-b border-[#E2E8F0]">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 shrink-0 rounded-xl bg-blue-50 text-[#2563EB] flex items-center justify-center">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15.5 7.5a4.5 4.5 0 10-6.364 6.364L4 19v1h3v-2h2v-2h2.5l2.136-2.136A4.5 4.5 0 0015.5 7.5Zm0 0h.01"
+                  />
+                </svg>
+              </div>
+
+              <div>
+                <h2 className="text-xl font-bold text-[#0F172A]">
+                  Change Password
+                </h2>
+
+                <p className="text-sm text-[#64748B] mt-1">
+                  Update your password to keep your account secure.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <form
+            onSubmit={handleChangePassword}
+            className="px-6 sm:px-8 py-6 space-y-5"
+          >
+            {/* CURRENT PASSWORD */}
+            <div>
+              <label
+                htmlFor="oldPassword"
+                className="block text-sm font-semibold text-[#0F172A] mb-2"
+              >
+                Current Password
+              </label>
+
+              <input
+                id="oldPassword"
+                type="password"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                placeholder="Enter your current password"
+                autoComplete="current-password"
+                className="
+                  w-full px-4 py-3
+                  bg-white
+                  border border-[#CBD5E1]
+                  rounded-xl
+                  outline-none
+                  text-[#0F172A]
+                  placeholder-[#94A3B8]
+                  focus:border-[#2563EB]
+                  focus:ring-2 focus:ring-blue-100
+                  transition
+                "
+              />
+            </div>
+
+            {/* NEW PASSWORD */}
+            <div>
+              <label
+                htmlFor="newPassword"
+                className="block text-sm font-semibold text-[#0F172A] mb-2"
+              >
+                New Password
+              </label>
+
+              <input
+                id="newPassword"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Enter your new password"
+                autoComplete="new-password"
+                className="
+                  w-full px-4 py-3
+                  bg-white
+                  border border-[#CBD5E1]
+                  rounded-xl
+                  outline-none
+                  text-[#0F172A]
+                  placeholder-[#94A3B8]
+                  focus:border-[#2563EB]
+                  focus:ring-2 focus:ring-blue-100
+                  transition
+                "
+              />
+
+              <p className="text-xs text-[#94A3B8] mt-2">
+                Password must be at least 6 characters.
+              </p>
+            </div>
+
+            {/* CONFIRM PASSWORD */}
+            <div>
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-semibold text-[#0F172A] mb-2"
+              >
+                Confirm New Password
+              </label>
+
+              <input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) =>
+                  setConfirmPassword(e.target.value)
+                }
+                placeholder="Confirm your new password"
+                autoComplete="new-password"
+                className="
+                  w-full px-4 py-3
+                  bg-white
+                  border border-[#CBD5E1]
+                  rounded-xl
+                  outline-none
+                  text-[#0F172A]
+                  placeholder-[#94A3B8]
+                  focus:border-[#2563EB]
+                  focus:ring-2 focus:ring-blue-100
+                  transition
+                "
+              />
+            </div>
+
+            {/* PASSWORD ERROR */}
+            {passwordError && (
+              <div className="flex items-start gap-3 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm">
+                <svg
+                  className="w-5 h-5 shrink-0 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 9v3.75m0 3.75h.01M10.29 3.86l-7.5 13A2 2 0 004.53 20h14.94a2 2 0 001.74-3.14l-7.5-13a2 2 0 00-3.42 0Z"
+                  />
+                </svg>
+
+                <span>{passwordError}</span>
+              </div>
+            )}
+
+            {/* PASSWORD SUCCESS */}
+            {passwordMessage && (
+              <div className="flex items-start gap-3 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm">
+                <svg
+                  className="w-5 h-5 shrink-0 mt-0.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+
+                <span>{passwordMessage}</span>
+              </div>
+            )}
+
+            {/* PASSWORD BUTTON */}
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={passwordLoading}
+                className="
+                  px-6 py-3
+                  rounded-xl
+                  bg-[#2563EB]
+                  text-white
+                  font-semibold text-sm
+                  hover:bg-[#1D4ED8]
+                  transition
+                  disabled:opacity-60
+                  disabled:cursor-not-allowed
+                  shadow-sm
+                "
+              >
+                {passwordLoading
+                  ? "Changing Password..."
+                  : "Change Password"}
+              </button>
+            </div>
+          </form>
+        </section>
       </main>
     </div>
   );
