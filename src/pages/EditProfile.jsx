@@ -98,7 +98,7 @@ const EditProfile = () => {
     if (!coverImage) return;
 
     const formData = new FormData();
-    formData.append("coverImage", coverImage);
+    formData.append("coverimage", coverImage);
 
     await axios.patch(`${API}/users/cover-image`, formData, {
       withCredentials: true,
