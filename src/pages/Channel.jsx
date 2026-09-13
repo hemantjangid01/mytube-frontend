@@ -104,7 +104,7 @@ export default function Channel() {
             await getChannel();
         } catch (error) {
             const message =
-                   error.response?.data?.message ||
+                   error.response?.data||
                  (typeof error.response?.data === "string"
                      ? error.response.data
                         : null) ||
