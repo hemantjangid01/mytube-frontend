@@ -140,14 +140,23 @@ const EditProfile = () => {
 
       setAvatar(null);
       setCoverImage(null);
-    } catch (error) {
-      setError(
-        error.response?.data?.message ||
-          "Failed to update profile"
-      );
-    } finally {
-      setSaving(false);
-    }
+    }  catch (error) {
+  const status = error.response?.status;
+  const message =
+    error.response?.data?.message ||
+    error.response?.data?.error ||
+    error.message;
+
+  if (status === 409) {
+    setError("An account with this email already exists.");
+  } else if (status === 400) {
+    setError(message || "Invalid account information.");
+  } else {
+    setError(message || "Failed to update profile.");
+  }
+} finally {
+  setSaving(false);
+}
   };
 
   // =========================
