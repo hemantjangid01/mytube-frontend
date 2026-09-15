@@ -212,7 +212,7 @@ const Header = () => {
 
                 <div className="hidden lg:block text-left">
                   <p className="text-sm font-semibold text-white leading-tight">
-                    {user.username}
+                   {user.fullname || user.username}
                   </p>
                   <p className="text-[11px] text-blue-100">
                     Profile
