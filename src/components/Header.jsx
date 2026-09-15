@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -9,31 +8,14 @@ const Header = () => {
 
   const API = import.meta.env.VITE_API_URL;
 
-  // =========================
-  // AUTH STATE
-  // =========================
-
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
-
-  // =========================
-  // SEARCH STATE
-  // =========================
-
   const [search, setSearch] = useState("");
-
-  // =========================
-  // SYNC SEARCH WITH URL
-  // =========================
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     setSearch(params.get("search") || "");
   }, [location.search]);
-
-  // =========================
-  // GET CURRENT USER
-  // =========================
 
   useEffect(() => {
     const getCurrentUser = async () => {
@@ -56,10 +38,6 @@ const Header = () => {
     getCurrentUser();
   }, [API]);
 
-  // =========================
-  // SEARCH
-  // =========================
-
   const handleSearch = (e) => {
     e.preventDefault();
 
@@ -72,10 +50,6 @@ const Header = () => {
 
     navigate(`/?search=${encodeURIComponent(trimmedSearch)}`);
   };
-
-  // =========================
-  // LOGOUT
-  // =========================
 
   const handleLogout = async () => {
     try {
@@ -94,16 +68,12 @@ const Header = () => {
     }
   };
 
-  // =========================
-  // USER INITIAL
-  // =========================
-
   const userInitial =
     user?.username?.charAt(0)?.toUpperCase() || "U";
 
   return (
-    <header className="sticky top-0 z-50 w-full h-16 bg-[#2563EB] shadow-md">
-      <div className="h-full flex items-center gap-3 px-3 sm:px-5">
+    <header className="sticky top-0 z-50 w-full h-16 bg-white border-b border-gray-200">
+      <div className="h-full flex items-center px-4 sm:px-6 lg:px-8 gap-4">
 
         {/* =========================
             LOGO
@@ -113,15 +83,42 @@ const Header = () => {
           type="button"
           onClick={() => navigate("/")}
           aria-label="Go to MyTube home"
-          className="flex items-center gap-2 shrink-0"
+          className="flex items-center gap-2.5 shrink-0 group"
         >
-          <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shadow-sm">
-            <span className="text-[#2563EB] text-lg font-bold">
-              ▶
-            </span>
+          {/* Logo */}
+          <div
+            className="
+              w-9
+              h-9
+              rounded-lg
+              bg-[#2563EB]
+              flex
+              items-center
+              justify-center
+              transition
+              group-hover:bg-[#1D4ED8]
+            "
+          >
+            <svg
+              className="w-4.5 h-4.5 text-white"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M8 5.5v13l10-6.5-10-6.5Z" />
+            </svg>
           </div>
 
-          <span className="hidden sm:block text-xl font-extrabold tracking-tight text-white">
+          <span
+            className="
+              hidden
+              sm:block
+              text-xl
+              font-bold
+              tracking-tight
+              text-gray-900
+            "
+          >
             MyTube
           </span>
         </button>
@@ -132,28 +129,41 @@ const Header = () => {
 
         <form
           onSubmit={handleSearch}
-          className="flex-1 flex justify-center px-1 sm:px-4"
+          className="flex-1 flex justify-center"
         >
-          <div className="flex w-full max-w-2xl h-10">
-
+          <div
+            className="
+              flex
+              w-full
+              max-w-2xl
+              h-10
+              bg-gray-50
+              border
+              border-gray-200
+              rounded-lg
+              overflow-hidden
+              focus-within:bg-white
+              focus-within:border-gray-300
+              focus-within:ring-2
+              focus-within:ring-blue-50
+              transition
+            "
+          >
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search videos..."
+              placeholder="Search videos"
               aria-label="Search videos"
               className="
                 flex-1
                 min-w-0
                 px-4
-                bg-white
+                bg-transparent
+                text-sm
                 text-gray-900
                 placeholder-gray-400
-                border border-gray-200
-                rounded-l-full
                 outline-none
-                focus:ring-2
-                focus:ring-blue-200
               "
             />
 
@@ -161,17 +171,14 @@ const Header = () => {
               type="submit"
               aria-label="Search"
               className="
-                w-12
+                w-11
                 shrink-0
                 flex
                 items-center
                 justify-center
-                bg-gray-100
-                text-gray-700
-                border border-gray-200
-                border-l-0
-                rounded-r-full
-                hover:bg-gray-200
+                text-gray-500
+                hover:text-gray-900
+                hover:bg-gray-100
                 transition
               "
             >
@@ -180,17 +187,15 @@ const Header = () => {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth="2"
+                  strokeWidth="1.8"
                   d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
                 />
               </svg>
             </button>
-
           </div>
         </form>
 
@@ -201,9 +206,8 @@ const Header = () => {
         <div className="flex items-center gap-2 shrink-0">
 
           {authLoading ? (
-            <div className="w-20 h-9 rounded-full bg-white/25 animate-pulse" />
+            <div className="w-20 h-9 rounded-lg bg-gray-100 animate-pulse" />
           ) : user ? (
-
             <>
               {/* PROFILE */}
 
@@ -215,22 +219,38 @@ const Header = () => {
                   flex
                   items-center
                   gap-2
-                  px-1.5
-                  sm:px-2
-                  py-1
-                  rounded-full
-                  hover:bg-white/10
+                  px-2
+                  py-1.5
+                  rounded-lg
+                  hover:bg-gray-100
                   transition
                 "
               >
-                <div className="w-9 h-9 rounded-full bg-white text-[#2563EB] flex items-center justify-center font-bold">
+                <div
+                  className="
+                    w-8
+                    h-8
+                    rounded-full
+                    bg-blue-50
+                    text-[#2563EB]
+                    flex
+                    items-center
+                    justify-center
+                    text-sm
+                    font-semibold
+                  "
+                >
                   {userInitial}
                 </div>
 
-                <span className="hidden lg:block text-sm font-medium text-white">
-                  Profile
+                <span className="hidden md:block text-sm font-medium text-gray-700">
+                  {user?.username || "Profile"}
                 </span>
               </button>
+
+              {/* DIVIDER */}
+
+              <div className="hidden sm:block w-px h-6 bg-gray-200" />
 
               {/* LOGOUT */}
 
@@ -239,24 +259,20 @@ const Header = () => {
                 onClick={handleLogout}
                 className="
                   px-3
-                  sm:px-4
                   py-2
-                  rounded-full
-                  bg-white
-                  text-[#2563EB]
+                  rounded-lg
                   text-sm
-                  font-semibold
-                  hover:bg-blue-50
-                  active:scale-95
+                  font-medium
+                  text-gray-600
+                  hover:text-gray-900
+                  hover:bg-gray-100
                   transition
                 "
               >
                 Logout
               </button>
             </>
-
           ) : (
-
             /* LOGIN */
 
             <button
@@ -264,15 +280,13 @@ const Header = () => {
               onClick={() => navigate("/login")}
               className="
                 px-4
-                sm:px-5
                 py-2
-                rounded-full
-                bg-white
-                text-[#2563EB]
+                rounded-lg
+                bg-[#2563EB]
+                text-white
                 text-sm
                 font-semibold
-                hover:bg-blue-50
-                active:scale-95
+                hover:bg-[#1D4ED8]
                 transition
               "
             >
