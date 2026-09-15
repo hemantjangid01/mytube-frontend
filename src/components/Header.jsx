@@ -58,7 +58,7 @@ const Header = () => {
       );
 
       setUser(null);
-      window.location.replace("/login");
+      navigate("/login", { replace: true });
     } catch (error) {
       // Logout failed
     }
