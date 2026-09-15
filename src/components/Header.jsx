@@ -189,18 +189,26 @@ const Header = () => {
                   transition
                 "
               >
-                <div
-                  className="
-                    w-8 h-8
-                    rounded-full
-                    bg-white
-                    text-[#2563EB]
-                    flex items-center justify-center
-                    text-sm font-bold
-                  "
-                >
-                  {userInitial}
-                </div>
+                {user?.avatar ? (
+  <img
+    src={user.avatar}
+    alt={user.username || "Profile"}
+    className="w-8 h-8 rounded-full object-cover"
+  />
+) : (
+  <div
+    className="
+      w-8 h-8
+      rounded-full
+      bg-white
+      text-[#2563EB]
+      flex items-center justify-center
+      text-sm font-bold
+    "
+  >
+    {userInitial}
+  </div>
+)}
 
                 <div className="hidden lg:block text-left">
                   <p className="text-sm font-semibold text-white leading-tight">

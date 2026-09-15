@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -14,16 +13,9 @@ export default function VideoCard({ video }) {
   return (
     <article
       onClick={() => navigate(`/watch/${video._id}`)}
-      className="
-        w-full
-        cursor-pointer
-        group
-      "
+      className="w-full cursor-pointer group"
     >
-      {/* =========================
-          THUMBNAIL
-      ========================= */}
-
+      {/* THUMBNAIL */}
       <div
         className="
           relative
@@ -49,7 +41,6 @@ export default function VideoCard({ video }) {
         />
 
         {/* Hover Overlay */}
-
         <div
           className="
             absolute
@@ -62,7 +53,6 @@ export default function VideoCard({ video }) {
         />
 
         {/* Play Button */}
-
         <div
           className="
             absolute
@@ -100,34 +90,43 @@ export default function VideoCard({ video }) {
         </div>
       </div>
 
-      {/* =========================
-          VIDEO INFORMATION
-      ========================= */}
-
+      {/* VIDEO INFORMATION */}
       <div className="flex gap-3 mt-3">
 
-        {/* Creator Avatar */}
+        {/* CREATOR AVATAR */}
+        {video?.owner?.avatar ? (
+          <img
+            src={video.owner.avatar}
+            alt={ownerName}
+            className="
+              w-9
+              h-9
+              shrink-0
+              rounded-full
+              object-cover
+            "
+          />
+        ) : (
+          <div
+            className="
+              w-9
+              h-9
+              shrink-0
+              rounded-full
+              bg-blue-50
+              text-[#2563EB]
+              flex
+              items-center
+              justify-center
+              font-semibold
+              text-sm
+            "
+          >
+            {ownerName.charAt(0).toUpperCase()}
+          </div>
+        )}
 
-        <div
-          className="
-            w-9
-            h-9
-            shrink-0
-            rounded-full
-            bg-blue-50
-            text-[#2563EB]
-            flex
-            items-center
-            justify-center
-            font-semibold
-            text-sm
-          "
-        >
-          {ownerName.charAt(0).toUpperCase()}
-        </div>
-
-        {/* Text */}
-
+        {/* TEXT */}
         <div className="min-w-0 flex-1">
 
           <h2
