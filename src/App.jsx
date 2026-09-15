@@ -25,10 +25,6 @@ import EditProfile from "./pages/EditProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 
-// =====================================
-// MAIN LAYOUT
-// =====================================
-
 const MainLayout = () => {
   return (
     <div className="min-h-screen">
@@ -76,33 +72,22 @@ function App() {
 
 
         {/* =========================
-            PUBLIC ROUTES
-        ========================== */}
-
-        <Route element={<MainLayout />}>
-
-          {/* Public Home */}
-          <Route
-            path="/"
-            element={<Home />}
-          />
-
-          {/* Public Watch */}
-          <Route
-            path="/watch/:videoId"
-            element={<Watch />}
-          />
-
-        </Route>
-
-
-        {/* =========================
             PROTECTED ROUTES
         ========================== */}
 
         <Route element={<ProtectedRoute />}>
 
           <Route element={<MainLayout />}>
+
+            <Route
+              path="/"
+              element={<Home />}
+            />
+
+            <Route
+              path="/watch/:videoId"
+              element={<Watch />}
+            />
 
             <Route
               path="/upload"
