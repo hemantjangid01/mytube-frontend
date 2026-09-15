@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import axios from "axios";
@@ -9,29 +8,39 @@ const ProtectedRoute = () => {
 
   const API = import.meta.env.VITE_API_URL;
 
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const response = await axios.get(
-          `${API}/users/current-user`,
-          {
-            withCredentials: true,
-          }
-        );
-
-        if (response.data.success) {
-          setAuthenticated(true);
-        } else {
-          setAuthenticated(false);
+  const checkUser = async () => {
+    try {
+      const response = await axios.get(
+        `${API}/users/current-user`,
+        {
+          withCredentials: true,
         }
-      } catch (error) {
-        setAuthenticated(false);
-      } finally {
-        setLoading(false);
+      );
+
+      setAuthenticated(response.data?.success === true);
+    } catch (error) {
+      setAuthenticated(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+
+    const handlePageShow = (event) => {
+      // Browser restored page from Back/Forward cache
+      if (event.persisted) {
+        setLoading(true);
+        checkUser();
       }
     };
 
-    checkUser();
+    window.addEventListener("pageshow", handlePageShow);
+
+    return () => {
+      window.removeEventListener("pageshow", handlePageShow);
+    };
   }, [API]);
 
   if (loading) {
